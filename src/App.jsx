@@ -1,10 +1,15 @@
+import { useEffect } from 'react'
 import './App.css'
 
 function App() {
+  useEffect(() => {
+    document.title = 'Notes Service'
+  }, [])
+
   return (
     <div className="app">
       <header className="app-header">
-        <p className="app-brand">Notes</p>
+        <p className="app-brand">Notes Service</p>
       </header>
 
       <aside className="app-panel app-panel-left" aria-label="Left panel">

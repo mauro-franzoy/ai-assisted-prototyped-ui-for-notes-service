@@ -3,12 +3,17 @@ import { describe, expect, it } from 'vitest'
 import App from './App'
 
 describe('App Component Layout', () => {
-  it('renders all layout landmarks correctly', () => {
+  it('sets the document page title to Notes Service', () => {
+    render(<App />)
+    expect(document.title).toBe('Notes Service')
+  })
+
+  it('renders all layout landmarks correctly with brand title', () => {
     render(<App />)
 
     // Header (banner role)
     expect(screen.getByRole('banner')).toBeInTheDocument()
-    expect(screen.getByText('Notes')).toBeInTheDocument()
+    expect(screen.getByText('Notes Service')).toBeInTheDocument()
 
     // Left and Right panels (complementary roles with accessible names)
     expect(screen.getByRole('complementary', { name: /left panel/i })).toBeInTheDocument()
