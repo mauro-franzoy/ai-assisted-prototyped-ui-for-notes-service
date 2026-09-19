@@ -18,3 +18,14 @@ Whenever you introduce a code change or new feature, always include or update co
 
 Whenever you change or add content, always perform a spell check to ensure all text, comments, labels, and documentation are spelled correctly.
 
+# Permission Guidelines
+
+All agents must ask for permission before executing any change to the codebase. This includes but is not limited to:
+- Modifying existing code
+- Adding new features or functionality
+- Updating tests
+- Changing configuration files
+- Modifying documentation
+
+Always seek explicit user approval before making any changes to ensure alignment with project goals and prevent unintended modifications.
+
