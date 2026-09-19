@@ -19,7 +19,7 @@ function App() {
             Add a note
           </button>
           <button type="button" className="panel-btn">
-            List all notes
+            List notes
           </button>
           <button type="button" className="panel-btn">
             Retrieve a note

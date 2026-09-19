@@ -55,7 +55,7 @@ describe('App Component Layout', () => {
     expect(buttons).toHaveLength(3)
     expect(buttons.map((btn) => btn.textContent.trim())).toEqual([
       'Add a note',
-      'List all notes',
+      'List notes',
       'Retrieve a note',
     ])
 
