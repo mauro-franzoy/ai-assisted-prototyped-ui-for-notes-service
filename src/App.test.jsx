@@ -37,8 +37,7 @@ describe('App Component Layout', () => {
   it('renders expected section headings and placeholder text', () => {
     render(<App />)
 
-    expect(screen.getByRole('heading', { level: 2, name: /left panel/i })).toBeInTheDocument()
-    expect(screen.getByText(/sidebar content goes here/i)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: /menu/i })).toBeInTheDocument()
 
     expect(screen.getByRole('heading', { level: 2, name: /right panel/i })).toBeInTheDocument()
     expect(screen.getByText(/details content goes here/i)).toBeInTheDocument()
