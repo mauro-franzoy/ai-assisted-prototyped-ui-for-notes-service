@@ -13,3 +13,8 @@ Co-authored-by: <Agent Name> <<agent-identifier>>
 # Testing Guidelines
 
 Whenever you introduce a code change or new feature, always include or update corresponding automated tests if feasible and considered good practice for that specific case. Verify that all tests pass before completing your work.
+
+# Spell Check Guidelines
+
+Whenever you change or add content, always perform a spell check to ensure all text, comments, labels, and documentation are spelled correctly.
+
