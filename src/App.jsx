@@ -3,6 +3,8 @@ import './App.css'
 
 function App() {
   const [selectedAction, setSelectedAction] = useState(null)
+  const [noteName, setNoteName] = useState('')
+  const [noteText, setNoteText] = useState('')
 
   useEffect(() => {
     document.title = 'Notes Service'
@@ -10,6 +12,17 @@ function App() {
 
   const handleButtonClick = (action) => {
     setSelectedAction(action)
+  }
+
+  const handleAddNote = () => {
+    console.log('Adding note:', { name: noteName, text: noteText })
+    setNoteName('')
+    setNoteText('')
+  }
+
+  const handleClearNote = () => {
+    setNoteName('')
+    setNoteText('')
   }
 
   const getActionInstruction = (action) => {
@@ -48,6 +61,40 @@ function App() {
 
       <main className="app-main">
         <h1>{selectedAction || 'Welcome to Notes Service'}</h1>
+        {selectedAction === 'Add a note' && (
+          <div className="note-form">
+            <div className="form-field">
+              <label htmlFor="note-name">Name</label>
+              <input
+                id="note-name"
+                type="text"
+                value={noteName}
+                onChange={(e) => setNoteName(e.target.value)}
+                maxLength={50}
+                className="form-input"
+              />
+            </div>
+            <div className="form-field">
+              <label htmlFor="note-text">text</label>
+              <input
+                id="note-text"
+                type="text"
+                value={noteText}
+                onChange={(e) => setNoteText(e.target.value)}
+                maxLength={50}
+                className="form-input"
+              />
+            </div>
+            <div className="form-actions">
+              <button type="button" className="form-btn form-btn-add" onClick={handleAddNote}>
+                add
+              </button>
+              <button type="button" className="form-btn form-btn-clear" onClick={handleClearNote}>
+                clear
+              </button>
+            </div>
+          </div>
+        )}
       </main>
 
       <aside className="app-panel app-panel-right" aria-label="Right panel">

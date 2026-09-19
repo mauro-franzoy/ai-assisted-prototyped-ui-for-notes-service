@@ -94,5 +94,35 @@ describe('App Component Layout', () => {
     expect(screen.getByRole('heading', { level: 2, name: /retrieve a note/i })).toBeInTheDocument()
     expect(screen.getByText(/provide note id and click retrieve/i)).toBeInTheDocument()
   })
+
+  it('shows note form when Add a note button is clicked', () => {
+    render(<App />)
+
+    const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
+    const buttons = within(leftPanel).getAllByRole('button')
+
+    // Click "Add a note" button
+    act(() => {
+      fireEvent.click(buttons[0])
+    })
+
+    // Check form elements
+    expect(screen.getByLabelText(/name/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/text/i)).toBeInTheDocument()
+
+    const nameInput = screen.getByLabelText(/name/i)
+    const textInput = screen.getByLabelText(/text/i)
+
+    expect(nameInput).toHaveAttribute('maxLength', '50')
+    expect(textInput).toHaveAttribute('maxLength', '50')
+
+    // Check buttons
+    const formButtons = screen.getAllByRole('button')
+    const addButton = formButtons.find(btn => btn.textContent === 'add')
+    const clearButton = formButtons.find(btn => btn.textContent === 'clear')
+
+    expect(addButton).toBeInTheDocument()
+    expect(clearButton).toBeInTheDocument()
+  })
 })
 
