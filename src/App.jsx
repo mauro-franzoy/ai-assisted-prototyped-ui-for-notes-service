@@ -14,6 +14,17 @@ function App() {
 
       <aside className="app-panel app-panel-left" aria-label="Left panel">
         <h2>Left panel</h2>
+        <div className="panel-actions">
+          <button type="button" className="panel-btn">
+            Add a note
+          </button>
+          <button type="button" className="panel-btn">
+            List all notes
+          </button>
+          <button type="button" className="panel-btn">
+            Retrieve a note
+          </button>
+        </div>
         <p>Sidebar content goes here.</p>
       </aside>
 

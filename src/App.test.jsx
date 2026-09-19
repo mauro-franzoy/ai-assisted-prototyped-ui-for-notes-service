@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import App from './App'
 
@@ -46,4 +46,24 @@ describe('App Component Layout', () => {
     expect(screen.getByText(/main area content goes here/i)).toBeInTheDocument()
     expect(screen.getByText(/^footer$/i)).toBeInTheDocument()
   })
+
+  it('renders three action buttons with idle behavior in the left panel', () => {
+    render(<App />)
+
+    const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
+    const buttons = within(leftPanel).getAllByRole('button')
+
+    expect(buttons).toHaveLength(3)
+    expect(buttons.map((btn) => btn.textContent.trim())).toEqual([
+      'Add a note',
+      'List all notes',
+      'Retrieve a note',
+    ])
+
+    buttons.forEach((button) => {
+      expect(button).toHaveAttribute('type', 'button')
+      expect(() => button.click()).not.toThrow()
+    })
+  })
 })
+
