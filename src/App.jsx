@@ -5,6 +5,7 @@ function App() {
   const [selectedAction, setSelectedAction] = useState(null)
   const [noteName, setNoteName] = useState('')
   const [noteText, setNoteText] = useState('')
+  const [noteId, setNoteId] = useState('')
 
   useEffect(() => {
     document.title = 'Notes Service'
@@ -23,6 +24,15 @@ function App() {
   const handleClearNote = () => {
     setNoteName('')
     setNoteText('')
+  }
+
+  const handleRetrieveNote = () => {
+    console.log('Retrieving note with id:', noteId)
+    setNoteId('')
+  }
+
+  const handleClearRetrieve = () => {
+    setNoteId('')
   }
 
   const getActionInstruction = (action) => {
@@ -90,6 +100,28 @@ function App() {
                 add
               </button>
               <button type="button" className="form-btn form-btn-clear" onClick={handleClearNote}>
+                clear
+              </button>
+            </div>
+          </div>
+        )}
+        {selectedAction === 'Retrieve a note' && (
+          <div className="note-form">
+            <div className="form-field">
+              <label htmlFor="note-id">Note id</label>
+              <input
+                id="note-id"
+                type="text"
+                value={noteId}
+                onChange={(e) => setNoteId(e.target.value)}
+                className="form-input"
+              />
+            </div>
+            <div className="form-actions">
+              <button type="button" className="form-btn form-btn-add" onClick={handleRetrieveNote}>
+                retrieve
+              </button>
+              <button type="button" className="form-btn form-btn-clear" onClick={handleClearRetrieve}>
                 clear
               </button>
             </div>

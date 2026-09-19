@@ -93,6 +93,7 @@ describe('App Component Layout', () => {
     expect(screen.getByRole('heading', { level: 1, name: /retrieve a note/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 2, name: /retrieve a note/i })).toBeInTheDocument()
     expect(screen.getByText(/provide note id and click retrieve/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/note id/i)).toBeInTheDocument()
   })
 
   it('shows note form when Add a note button is clicked', () => {
@@ -122,6 +123,32 @@ describe('App Component Layout', () => {
     const clearButton = formButtons.find(btn => btn.textContent === 'clear')
 
     expect(addButton).toBeInTheDocument()
+    expect(clearButton).toBeInTheDocument()
+  })
+
+  it('shows retrieve form when Retrieve a note button is clicked', () => {
+    render(<App />)
+
+    const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
+    const buttons = within(leftPanel).getAllByRole('button')
+
+    // Click "Retrieve a note" button
+    act(() => {
+      fireEvent.click(buttons[2])
+    })
+
+    // Check form elements
+    expect(screen.getByLabelText(/note id/i)).toBeInTheDocument()
+
+    const noteIdInput = screen.getByLabelText(/note id/i)
+    expect(noteIdInput).toBeInTheDocument()
+
+    // Check buttons
+    const formButtons = screen.getAllByRole('button')
+    const retrieveButton = formButtons.find(btn => btn.textContent === 'retrieve')
+    const clearButton = formButtons.find(btn => btn.textContent === 'clear')
+
+    expect(retrieveButton).toBeInTheDocument()
     expect(clearButton).toBeInTheDocument()
   })
 })
