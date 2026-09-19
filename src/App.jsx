@@ -135,7 +135,7 @@ function App() {
       </aside>
 
       <footer className="app-footer">
-        <p>Footer</p>
+        <p>Note Service</p>
       </footer>
     </div>
   )

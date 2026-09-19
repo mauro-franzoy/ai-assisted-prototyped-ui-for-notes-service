@@ -40,7 +40,7 @@ describe('App Component Layout', () => {
     expect(screen.getByRole('heading', { level: 2, name: /menu/i })).toBeInTheDocument()
 
     expect(screen.queryByText(/details content goes here/i)).not.toBeInTheDocument()
-    expect(screen.getByText(/^footer$/i)).toBeInTheDocument()
+    expect(screen.getByText(/^note service$/i)).toBeInTheDocument()
   })
 
   it('renders three action buttons with idle behavior in the left panel', () => {
