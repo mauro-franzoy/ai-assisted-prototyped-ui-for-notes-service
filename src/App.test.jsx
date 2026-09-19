@@ -1,3 +1,5 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import App from './App'
@@ -6,6 +8,11 @@ describe('App Component Layout', () => {
   it('sets the document page title to Notes Service', () => {
     render(<App />)
     expect(document.title).toBe('Notes Service')
+  })
+
+  it('provides an svg favicon containing the lowercase n letter', () => {
+    const faviconContent = fs.readFileSync(path.resolve(process.cwd(), 'public/favicon.svg'), 'utf-8')
+    expect(faviconContent).toContain('>n<')
   })
 
   it('renders all layout landmarks correctly with brand title', () => {
