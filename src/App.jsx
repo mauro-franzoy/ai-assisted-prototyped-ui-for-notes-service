@@ -29,7 +29,7 @@ function App() {
       </aside>
 
       <main className="app-main">
-        <h1>Welcome</h1>
+        <h1>Welcome to Notes Service</h1>
       </main>
 
       <aside className="app-panel app-panel-right" aria-label="Right panel">

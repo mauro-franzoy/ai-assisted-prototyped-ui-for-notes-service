@@ -28,7 +28,7 @@ describe('App Component Layout', () => {
 
     // Main area (main role)
     expect(screen.getByRole('main')).toBeInTheDocument()
-    expect(screen.getByRole('heading', { level: 1, name: /welcome/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: /welcome to notes service/i })).toBeInTheDocument()
 
     // Footer (contentinfo role)
     expect(screen.getByRole('contentinfo')).toBeInTheDocument()
