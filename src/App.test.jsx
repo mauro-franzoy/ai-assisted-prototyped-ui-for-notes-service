@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, within, fireEvent, act } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import App from './App'
 
@@ -39,10 +39,7 @@ describe('App Component Layout', () => {
 
     expect(screen.getByRole('heading', { level: 2, name: /menu/i })).toBeInTheDocument()
 
-    expect(screen.getByRole('heading', { level: 2, name: /right panel/i })).toBeInTheDocument()
-    expect(screen.getByText(/details content goes here/i)).toBeInTheDocument()
-
-    expect(screen.queryByText(/main area content goes here/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/details content goes here/i)).not.toBeInTheDocument()
     expect(screen.getByText(/^footer$/i)).toBeInTheDocument()
   })
 
@@ -61,8 +58,38 @@ describe('App Component Layout', () => {
 
     buttons.forEach((button) => {
       expect(button).toHaveAttribute('type', 'button')
-      expect(() => button.click()).not.toThrow()
+      act(() => {
+        expect(() => button.click()).not.toThrow()
+      })
     })
+  })
+
+  it('updates main area and right panel titles when buttons are clicked', () => {
+    render(<App />)
+
+    const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
+    const buttons = within(leftPanel).getAllByRole('button')
+
+    // Click "Add a note" button
+    act(() => {
+      fireEvent.click(buttons[0])
+    })
+    expect(screen.getByRole('heading', { level: 1, name: /add a note/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: /add a note/i })).toBeInTheDocument()
+
+    // Click "List notes" button
+    act(() => {
+      fireEvent.click(buttons[1])
+    })
+    expect(screen.getByRole('heading', { level: 1, name: /list notes/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: /list notes/i })).toBeInTheDocument()
+
+    // Click "Retrieve a note" button
+    act(() => {
+      fireEvent.click(buttons[2])
+    })
+    expect(screen.getByRole('heading', { level: 1, name: /retrieve a note/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: /retrieve a note/i })).toBeInTheDocument()
   })
 })
 
