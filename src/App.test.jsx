@@ -76,6 +76,7 @@ describe('App Component Layout', () => {
     })
     expect(screen.getByRole('heading', { level: 1, name: /add a note/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 2, name: /add a note/i })).toBeInTheDocument()
+    expect(screen.getByText(/provide note values and click add/i)).toBeInTheDocument()
 
     // Click "List notes" button
     act(() => {
@@ -83,6 +84,7 @@ describe('App Component Layout', () => {
     })
     expect(screen.getByRole('heading', { level: 1, name: /list notes/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 2, name: /list notes/i })).toBeInTheDocument()
+    expect(screen.getByText(/provide the filters if any and click retrieve/i)).toBeInTheDocument()
 
     // Click "Retrieve a note" button
     act(() => {
@@ -90,6 +92,7 @@ describe('App Component Layout', () => {
     })
     expect(screen.getByRole('heading', { level: 1, name: /retrieve a note/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 2, name: /retrieve a note/i })).toBeInTheDocument()
+    expect(screen.getByText(/provide note id and click retrieve/i)).toBeInTheDocument()
   })
 })
 

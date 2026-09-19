@@ -12,6 +12,19 @@ function App() {
     setSelectedAction(action)
   }
 
+  const getActionInstruction = (action) => {
+    switch (action) {
+      case 'Add a note':
+        return 'Provide note values and click add.'
+      case 'List notes':
+        return 'Provide the filters if any and click retrieve.'
+      case 'Retrieve a note':
+        return 'Provide note id and click retrieve.'
+      default:
+        return ''
+    }
+  }
+
   return (
     <div className="app">
       <header className="app-header">
@@ -39,6 +52,7 @@ function App() {
 
       <aside className="app-panel app-panel-right" aria-label="Right panel">
         <h2>{selectedAction || ''}</h2>
+        {selectedAction && <p>{getActionInstruction(selectedAction)}</p>}
       </aside>
 
       <footer className="app-footer">
