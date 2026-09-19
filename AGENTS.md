@@ -26,6 +26,8 @@ All agents must ask for permission before executing any change to the codebase. 
 - Updating tests
 - Changing configuration files
 - Modifying documentation
+- Performing web searches
+- Executing any command or step
 
-Always seek explicit user approval before making any changes to ensure alignment with project goals and prevent unintended modifications.
+Always seek explicit user approval before making any changes or performing any actions to ensure alignment with project goals and prevent unintended modifications.
 
