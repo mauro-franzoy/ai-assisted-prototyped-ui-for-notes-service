@@ -29,8 +29,7 @@ function App() {
       </aside>
 
       <main className="app-main">
-        <h1>Home</h1>
-        <p>Main area content goes here.</p>
+        <h1>Welcome</h1>
       </main>
 
       <aside className="app-panel app-panel-right" aria-label="Right panel">

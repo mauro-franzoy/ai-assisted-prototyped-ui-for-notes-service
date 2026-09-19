@@ -28,7 +28,7 @@ describe('App Component Layout', () => {
 
     // Main area (main role)
     expect(screen.getByRole('main')).toBeInTheDocument()
-    expect(screen.getByRole('heading', { level: 1, name: /home/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: /welcome/i })).toBeInTheDocument()
 
     // Footer (contentinfo role)
     expect(screen.getByRole('contentinfo')).toBeInTheDocument()
@@ -43,7 +43,7 @@ describe('App Component Layout', () => {
     expect(screen.getByRole('heading', { level: 2, name: /right panel/i })).toBeInTheDocument()
     expect(screen.getByText(/details content goes here/i)).toBeInTheDocument()
 
-    expect(screen.getByText(/main area content goes here/i)).toBeInTheDocument()
+    expect(screen.queryByText(/main area content goes here/i)).not.toBeInTheDocument()
     expect(screen.getByText(/^footer$/i)).toBeInTheDocument()
   })
 
