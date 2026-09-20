@@ -43,3 +43,7 @@ When adding a new component to the codebase:
   - Component-specific tests (e.g., `NoteCard.test.jsx`)
 - This keeps related files together and maintains a clean, organized codebase structure
 
+# Backend Interaction Guidelines
+
+Since this is a demo application, when interacting with the backend and there is a need to provide a user_id, it should always be '1' as this is the only available user in the system.
+
