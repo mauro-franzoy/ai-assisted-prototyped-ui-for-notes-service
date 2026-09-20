@@ -204,5 +204,37 @@ describe('App Component Layout', () => {
     expect(screen.getByText('Meeting Notes')).toBeInTheDocument()
     expect(screen.getByText('Discuss project timeline and deliverables')).toBeInTheDocument()
   })
+
+  it('shows clear button when notes list is displayed and returns to previous state when clicked', () => {
+    render(<App />)
+
+    const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
+    const buttons = within(leftPanel).getAllByRole('button')
+
+    // Click "List notes" button
+    act(() => {
+      fireEvent.click(buttons[1])
+    })
+
+    // Click retrieve button
+    const mainArea = screen.getByRole('main')
+    const retrieveButton = within(mainArea).getByText(/^retrieve$/i)
+    act(() => {
+      fireEvent.click(retrieveButton)
+    })
+
+    // Check for clear button
+    const clearButton = within(mainArea).getByText(/^clear$/i)
+    expect(clearButton).toBeInTheDocument()
+
+    // Click clear button
+    act(() => {
+      fireEvent.click(clearButton)
+    })
+
+    // Check that notes list is hidden and retrieve button is shown again
+    expect(screen.queryByText('Meeting Notes')).not.toBeInTheDocument()
+    expect(within(mainArea).getByText(/^retrieve$/i)).toBeInTheDocument()
+  })
 })
 

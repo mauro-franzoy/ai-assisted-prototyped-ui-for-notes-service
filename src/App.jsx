@@ -59,6 +59,10 @@ function App() {
     setShowNotesList(true)
   }
 
+  const handleClearListNotes = () => {
+    setShowNotesList(false)
+  }
+
   const getActionInstruction = (action) => {
     switch (action) {
       case 'Add a note':
@@ -161,13 +165,20 @@ function App() {
           </div>
         )}
         {selectedAction === 'List notes' && showNotesList && (
-          <div className="notes-list-container">
-            <div className="notes-grid">
-              {notes.map((note) => (
-                <NoteCard key={note.id} note={note} />
-              ))}
+          <>
+            <div className="form-actions">
+              <button type="button" className="form-btn form-btn-clear" onClick={handleClearListNotes}>
+                clear
+              </button>
             </div>
-          </div>
+            <div className="notes-list-container">
+              <div className="notes-grid">
+                {notes.map((note) => (
+                  <NoteCard key={note.id} note={note} />
+                ))}
+              </div>
+            </div>
+          </>
         )}
       </main>
 
