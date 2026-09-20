@@ -10,14 +10,9 @@ function App() {
   const [showNotesList, setShowNotesList] = useState(false)
   const [showRetrievedNote, setShowRetrievedNote] = useState(false)
   const [retrievedNote, setRetrievedNote] = useState(null)
-  const [notes, setNotes] = useState([
-    { id: 1, name: 'Meeting Notes', text: 'Discuss project timeline and deliverables' },
-    { id: 2, name: 'Shopping List', text: 'Milk, eggs, bread, vegetables' },
-    { id: 3, name: 'Book Ideas', text: 'Read more about React and testing' },
-    { id: 4, name: 'Travel Plans', text: 'Flight to NYC on Friday, hotel booking needed' },
-    { id: 5, name: 'Work Tasks', text: 'Complete code review, update documentation' },
-    { id: 6, name: 'Personal Goals', text: 'Exercise 3 times a week, learn new skill' },
-  ])
+  const [notes, setNotes] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     document.title = 'Notes Service'
@@ -27,10 +22,36 @@ function App() {
     setSelectedAction(action)
   }
 
-  const handleAddNote = () => {
-    console.log('Adding note:', { name: noteName, text: noteText })
-    setNoteName('')
-    setNoteText('')
+  const handleAddNote = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const response = await fetch('http://localhost:8080/noteservice/notes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: noteName,
+          noteText: noteText,
+          usersId: 1
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to add note')
+      }
+
+      const data = await response.json()
+      console.log('Note added successfully:', data)
+      setNoteName('')
+      setNoteText('')
+    } catch (err) {
+      setError(err.message)
+      console.error('Error adding note:', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleClearNote = () => {
@@ -38,17 +59,34 @@ function App() {
     setNoteText('')
   }
 
-  const handleRetrieveNote = () => {
-    console.log('Retrieving note with id:', noteId)
-    // For demo purposes, find a note by id or use a sample note
-    const foundNote = notes.find(note => note.id === parseInt(noteId)) || {
-      id: 1,
-      name: 'Sample Note',
-      text: 'This is a sample retrieved note content'
+  const handleRetrieveNote = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const response = await fetch(`http://localhost:8080/noteservice/notes/${noteId}`, {
+        method: 'GET',
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to retrieve note')
+      }
+
+      const data = await response.json()
+      // Assuming the API returns a note object with id, name, and noteText fields
+      const noteData = {
+        id: data.id,
+        name: data.name,
+        text: data.noteText
+      }
+      setRetrievedNote(noteData)
+      setShowRetrievedNote(true)
+      setNoteId('')
+    } catch (err) {
+      setError(err.message)
+      console.error('Error retrieving note:', err)
+    } finally {
+      setLoading(false)
     }
-    setRetrievedNote(foundNote)
-    setShowRetrievedNote(true)
-    setNoteId('')
   }
 
   const handleClearRetrieve = () => {
@@ -60,8 +98,33 @@ function App() {
     setRetrievedNote(null)
   }
 
-  const handleListNotes = () => {
-    setShowNotesList(true)
+  const handleListNotes = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const response = await fetch('http://localhost:8080/noteservice/notes', {
+        method: 'GET',
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to list notes')
+      }
+
+      const data = await response.json()
+      // Assuming the API returns an array of note objects
+      const notesData = data.map(note => ({
+        id: note.id,
+        name: note.name,
+        text: note.noteText
+      }))
+      setNotes(notesData)
+      setShowNotesList(true)
+    } catch (err) {
+      setError(err.message)
+      console.error('Error listing notes:', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleClearListNotes = () => {
@@ -104,6 +167,7 @@ function App() {
 
       <main className="app-main">
         <h1>{selectedAction || 'Welcome to Notes Service'}</h1>
+        {error && <div className="error-message">{error}</div>}
         {selectedAction === 'Add a note' && (
           <div className="note-form">
             <div className="form-field">
@@ -115,6 +179,7 @@ function App() {
                 onChange={(e) => setNoteName(e.target.value)}
                 maxLength={50}
                 className="form-input"
+                disabled={loading}
               />
             </div>
             <div className="form-field">
@@ -126,13 +191,24 @@ function App() {
                 onChange={(e) => setNoteText(e.target.value)}
                 maxLength={50}
                 className="form-input"
+                disabled={loading}
               />
             </div>
             <div className="form-actions">
-              <button type="button" className="form-btn form-btn-add" onClick={handleAddNote}>
-                add
+              <button 
+                type="button" 
+                className="form-btn form-btn-add" 
+                onClick={handleAddNote}
+                disabled={loading}
+              >
+                {loading ? 'Adding...' : 'add'}
               </button>
-              <button type="button" className="form-btn form-btn-clear" onClick={handleClearNote}>
+              <button 
+                type="button" 
+                className="form-btn form-btn-clear" 
+                onClick={handleClearNote}
+                disabled={loading}
+              >
                 clear
               </button>
             </div>
@@ -148,13 +224,24 @@ function App() {
                 value={noteId}
                 onChange={(e) => setNoteId(e.target.value)}
                 className="form-input"
+                disabled={loading}
               />
             </div>
             <div className="form-actions">
-              <button type="button" className="form-btn form-btn-add" onClick={handleRetrieveNote}>
-                retrieve
+              <button 
+                type="button" 
+                className="form-btn form-btn-add" 
+                onClick={handleRetrieveNote}
+                disabled={loading}
+              >
+                {loading ? 'Retrieving...' : 'retrieve'}
               </button>
-              <button type="button" className="form-btn form-btn-clear" onClick={handleClearRetrieve}>
+              <button 
+                type="button" 
+                className="form-btn form-btn-clear" 
+                onClick={handleClearRetrieve}
+                disabled={loading}
+              >
                 clear
               </button>
             </div>
@@ -173,8 +260,13 @@ function App() {
         {selectedAction === 'List notes' && !showNotesList && (
           <div className="note-form">
             <div className="form-actions">
-              <button type="button" className="form-btn form-btn-add" onClick={handleListNotes}>
-                retrieve
+              <button 
+                type="button" 
+                className="form-btn form-btn-add" 
+                onClick={handleListNotes}
+                disabled={loading}
+              >
+                {loading ? 'Loading...' : 'retrieve'}
               </button>
             </div>
           </div>

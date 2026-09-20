@@ -1,10 +1,22 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { render, screen, within, fireEvent, act } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest'
 import App from './App'
 
+// Mock fetch globally
+global.fetch = vi.fn()
+
 describe('App Component Layout', () => {
+  beforeEach(() => {
+    // Clear mock before each test
+    global.fetch.mockClear()
+  })
+
+  afterEach(() => {
+    // Reset mock after each test
+    global.fetch.mockReset()
+  })
   it('sets the document page title to Notes Service', () => {
     render(<App />)
     expect(document.title).toBe('Notes Service')
@@ -161,7 +173,17 @@ describe('App Component Layout', () => {
     expect(clearButton).toBeInTheDocument()
   })
 
-  it('shows retrieved note card when retrieve button is clicked and clear button returns to form', () => {
+  it('shows retrieved note card when retrieve button is clicked and clear button returns to form', async () => {
+    // Mock successful API response
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        id: 1,
+        name: 'Sample Note',
+        noteText: 'This is a sample retrieved note content'
+      }),
+    })
+
     render(<App />)
 
     const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
@@ -172,11 +194,16 @@ describe('App Component Layout', () => {
       fireEvent.click(buttons[2])
     })
 
-    // Click retrieve button (will show sample note)
+    // Click retrieve button (will make API call)
     const mainArea = screen.getByRole('main')
     const retrieveButton = within(mainArea).getByText(/^retrieve$/i)
     act(() => {
       fireEvent.click(retrieveButton)
+    })
+
+    // Wait for async operation
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 0))
     })
 
     // Check for note card content (NoteCard component renders this)
@@ -214,7 +241,16 @@ describe('App Component Layout', () => {
     expect(retrieveButton).toBeInTheDocument()
   })
 
-  it('shows notes list when retrieve button is clicked in List notes', () => {
+  it('shows notes list when retrieve button is clicked in List notes', async () => {
+    // Mock successful API response
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => [
+        { id: 1, name: 'Meeting Notes', noteText: 'Discuss project timeline and deliverables' },
+        { id: 2, name: 'Shopping List', noteText: 'Milk, eggs, bread, vegetables' },
+      ],
+    })
+
     render(<App />)
 
     const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
@@ -230,6 +266,11 @@ describe('App Component Layout', () => {
     const retrieveButton = within(mainArea).getByText(/^retrieve$/i)
     act(() => {
       fireEvent.click(retrieveButton)
+    })
+
+    // Wait for async operation
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 0))
     })
 
     // Check for sample note content (NoteCard component renders this)
@@ -237,7 +278,15 @@ describe('App Component Layout', () => {
     expect(screen.getByText('Discuss project timeline and deliverables')).toBeInTheDocument()
   })
 
-  it('shows clear button when notes list is displayed and returns to previous state when clicked', () => {
+  it('shows clear button when notes list is displayed and returns to previous state when clicked', async () => {
+    // Mock successful API response
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => [
+        { id: 1, name: 'Meeting Notes', noteText: 'Discuss project timeline and deliverables' },
+      ],
+    })
+
     render(<App />)
 
     const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
@@ -253,6 +302,11 @@ describe('App Component Layout', () => {
     const retrieveButton = within(mainArea).getByText(/^retrieve$/i)
     act(() => {
       fireEvent.click(retrieveButton)
+    })
+
+    // Wait for async operation
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 0))
     })
 
     // Check for clear button
@@ -267,6 +321,73 @@ describe('App Component Layout', () => {
     // Check that notes list is hidden and retrieve button is shown again
     expect(screen.queryByText('Meeting Notes')).not.toBeInTheDocument()
     expect(within(mainArea).getByText(/^retrieve$/i)).toBeInTheDocument()
+  })
+})
+
+describe('App Component API Integration', () => {
+  beforeEach(() => {
+    // Clear mock before each test
+    global.fetch.mockClear()
+  })
+
+  afterEach(() => {
+    // Reset mock after each test
+    global.fetch.mockReset()
+  })
+
+  it('calls API to add note when add button is clicked', async () => {
+    // Mock successful API response
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ id: 1, name: 'Test Note', noteText: 'Test content' }),
+    })
+
+    render(<App />)
+
+    const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
+    const buttons = within(leftPanel).getAllByRole('button')
+
+    // Click "Add a note" button
+    act(() => {
+      fireEvent.click(buttons[0])
+    })
+
+    // Fill in the form
+    const nameInput = screen.getByLabelText(/name/i)
+    const textInput = screen.getByLabelText(/text/i)
+    
+    act(() => {
+      fireEvent.change(nameInput, { target: { value: 'Test Note' } })
+      fireEvent.change(textInput, { target: { value: 'Test content' } })
+    })
+
+    // Click add button
+    const mainArea = screen.getByRole('main')
+    const addButton = within(mainArea).getByText(/^add$/i)
+    act(() => {
+      fireEvent.click(addButton)
+    })
+
+    // Wait for async operation
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 0))
+    })
+
+    // Verify fetch was called with correct parameters
+    expect(global.fetch).toHaveBeenCalledWith(
+      'http://localhost:8080/noteservice/notes',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: 'Test Note',
+          noteText: 'Test content',
+          usersId: 1
+        }),
+      }
+    )
   })
 })
 

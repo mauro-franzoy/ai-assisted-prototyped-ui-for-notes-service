@@ -183,6 +183,21 @@
   border-color: var(--accent-border);
 }
 
+.form-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-message {
+  margin-top: 16px;
+  padding: 12px;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  color: #dc2626;
+  font-size: 14px;
+}
+
 .notes-list-container {
   margin-top: 24px;
   max-height: 400px;
