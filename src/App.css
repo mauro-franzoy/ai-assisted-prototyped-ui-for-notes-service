@@ -196,40 +196,6 @@
   gap: 16px;
 }
 
-.note-card {
-  padding: 16px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  transition: all 0.18s ease-in-out;
-}
-
-.note-card:hover {
-  border-color: var(--accent-border);
-  box-shadow: 0 4px 10px rgba(170, 59, 255, 0.12);
-  transform: translateY(-2px);
-}
-
-.note-card-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-dim);
-  margin-bottom: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.note-card-value {
-  font-size: 14px;
-  color: var(--text);
-  margin-bottom: 12px;
-  line-height: 1.4;
-}
-
-.note-card-value:last-child {
-  margin-bottom: 0;
-}
-
 .app-footer {
   grid-area: footer;
   display: flex;

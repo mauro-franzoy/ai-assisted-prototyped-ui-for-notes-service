@@ -179,9 +179,9 @@ describe('App Component Layout', () => {
       fireEvent.click(retrieveButton)
     })
 
-    // Check for note card with content
-    expect(screen.getByText(/^name$/i)).toBeInTheDocument()
-    expect(screen.getByText(/^text$/i)).toBeInTheDocument()
+    // Check for note card content (NoteCard component renders this)
+    expect(screen.getByText('Sample Note')).toBeInTheDocument()
+    expect(screen.getByText('This is a sample retrieved note content')).toBeInTheDocument()
 
     // Check for clear button above note card
     const clearButton = within(mainArea).getByText(/^clear$/i)
@@ -193,7 +193,7 @@ describe('App Component Layout', () => {
     })
 
     // Check that note card is hidden and form is shown again
-    expect(screen.queryByText(/^name$/i)).not.toBeInTheDocument()
+    expect(screen.queryByText('Sample Note')).not.toBeInTheDocument()
     expect(screen.getByLabelText(/note id/i)).toBeInTheDocument()
   })
 
@@ -232,11 +232,7 @@ describe('App Component Layout', () => {
       fireEvent.click(retrieveButton)
     })
 
-    // Check for note cards with labels and content
-    expect(screen.getAllByText(/^name$/i).length).toBeGreaterThan(0)
-    expect(screen.getAllByText(/^text$/i).length).toBeGreaterThan(0)
-    
-    // Check for sample note content
+    // Check for sample note content (NoteCard component renders this)
     expect(screen.getByText('Meeting Notes')).toBeInTheDocument()
     expect(screen.getByText('Discuss project timeline and deliverables')).toBeInTheDocument()
   })
