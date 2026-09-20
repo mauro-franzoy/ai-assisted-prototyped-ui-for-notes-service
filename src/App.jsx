@@ -72,7 +72,6 @@ function App() {
       }
 
       const data = await response.json()
-      // Assuming the API returns a note object with id, name, and noteText fields
       const noteData = {
         id: data.id,
         name: data.name,
@@ -113,7 +112,6 @@ function App() {
       }
 
       const data = await response.json()
-      // Assuming the API returns an array of note objects
       const notesData = data.map(note => ({
         id: note.id,
         name: note.name,
