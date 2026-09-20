@@ -20,7 +20,8 @@ describe('App Component Layout', () => {
 
     // Header (banner role)
     expect(screen.getByRole('banner')).toBeInTheDocument()
-    expect(screen.getByText('Notes Service')).toBeInTheDocument()
+    const header = screen.getByRole('banner')
+    expect(within(header).getByText('Notes Service')).toBeInTheDocument()
 
     // Left and Right panels (complementary roles with accessible names)
     expect(screen.getByRole('complementary', { name: /left panel/i })).toBeInTheDocument()
@@ -40,7 +41,10 @@ describe('App Component Layout', () => {
     expect(screen.getByRole('heading', { level: 2, name: /menu/i })).toBeInTheDocument()
 
     expect(screen.queryByText(/details content goes here/i)).not.toBeInTheDocument()
-    expect(screen.getByText(/^note service$/i)).toBeInTheDocument()
+    
+    // Check footer text specifically in the footer element
+    const footer = screen.getByRole('contentinfo')
+    expect(within(footer).getByText('Notes Service')).toBeInTheDocument()
   })
 
   it('renders three action buttons with idle behavior in the left panel', () => {
