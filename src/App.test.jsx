@@ -153,12 +153,48 @@ describe('App Component Layout', () => {
     expect(noteIdInput).toBeInTheDocument()
 
     // Check buttons
-    const formButtons = screen.getAllByRole('button')
-    const retrieveButton = formButtons.find(btn => btn.textContent === 'retrieve')
-    const clearButton = formButtons.find(btn => btn.textContent === 'clear')
+    const mainArea = screen.getByRole('main')
+    const retrieveButton = within(mainArea).getByText(/^retrieve$/i)
+    const clearButton = within(mainArea).getByText(/^clear$/i)
 
     expect(retrieveButton).toBeInTheDocument()
     expect(clearButton).toBeInTheDocument()
+  })
+
+  it('shows retrieved note card when retrieve button is clicked and clear button returns to form', () => {
+    render(<App />)
+
+    const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
+    const buttons = within(leftPanel).getAllByRole('button')
+
+    // Click "Retrieve a note" button
+    act(() => {
+      fireEvent.click(buttons[2])
+    })
+
+    // Click retrieve button (will show sample note)
+    const mainArea = screen.getByRole('main')
+    const retrieveButton = within(mainArea).getByText(/^retrieve$/i)
+    act(() => {
+      fireEvent.click(retrieveButton)
+    })
+
+    // Check for note card with content
+    expect(screen.getByText(/^name$/i)).toBeInTheDocument()
+    expect(screen.getByText(/^text$/i)).toBeInTheDocument()
+
+    // Check for clear button above note card
+    const clearButton = within(mainArea).getByText(/^clear$/i)
+    expect(clearButton).toBeInTheDocument()
+
+    // Click clear button
+    act(() => {
+      fireEvent.click(clearButton)
+    })
+
+    // Check that note card is hidden and form is shown again
+    expect(screen.queryByText(/^name$/i)).not.toBeInTheDocument()
+    expect(screen.getByLabelText(/note id/i)).toBeInTheDocument()
   })
 
   it('shows retrieve button when List notes button is clicked', () => {

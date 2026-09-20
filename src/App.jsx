@@ -18,6 +18,8 @@ function App() {
   const [noteText, setNoteText] = useState('')
   const [noteId, setNoteId] = useState('')
   const [showNotesList, setShowNotesList] = useState(false)
+  const [showRetrievedNote, setShowRetrievedNote] = useState(false)
+  const [retrievedNote, setRetrievedNote] = useState(null)
   const [notes, setNotes] = useState([
     { id: 1, name: 'Meeting Notes', text: 'Discuss project timeline and deliverables' },
     { id: 2, name: 'Shopping List', text: 'Milk, eggs, bread, vegetables' },
@@ -48,11 +50,24 @@ function App() {
 
   const handleRetrieveNote = () => {
     console.log('Retrieving note with id:', noteId)
+    // For demo purposes, find a note by id or use a sample note
+    const foundNote = notes.find(note => note.id === parseInt(noteId)) || {
+      id: 1,
+      name: 'Sample Note',
+      text: 'This is a sample retrieved note content'
+    }
+    setRetrievedNote(foundNote)
+    setShowRetrievedNote(true)
     setNoteId('')
   }
 
   const handleClearRetrieve = () => {
     setNoteId('')
+  }
+
+  const handleClearRetrievedNote = () => {
+    setShowRetrievedNote(false)
+    setRetrievedNote(null)
   }
 
   const handleListNotes = () => {
@@ -133,7 +148,7 @@ function App() {
             </div>
           </div>
         )}
-        {selectedAction === 'Retrieve a note' && (
+        {selectedAction === 'Retrieve a note' && !showRetrievedNote && (
           <div className="note-form">
             <div className="form-field">
               <label htmlFor="note-id">Note id</label>
@@ -154,6 +169,16 @@ function App() {
               </button>
             </div>
           </div>
+        )}
+        {selectedAction === 'Retrieve a note' && showRetrievedNote && (
+          <>
+            <div className="form-actions">
+              <button type="button" className="form-btn form-btn-clear" onClick={handleClearRetrievedNote}>
+                clear
+              </button>
+            </div>
+            {retrievedNote && <NoteCard note={retrievedNote} />}
+          </>
         )}
         {selectedAction === 'List notes' && !showNotesList && (
           <div className="note-form">
