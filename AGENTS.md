@@ -31,3 +31,15 @@ All agents must ask for permission before executing any change to the codebase. 
 
 Always seek explicit user approval before making any changes or performing any actions to ensure alignment with project goals and prevent unintended modifications.
 
+# Component Organization Guidelines
+
+When adding a new component to the codebase:
+- Create a dedicated folder for the component within `src/components/`
+- The folder name should follow PascalCase convention (start with uppercase, rest lowercase)
+- For example: `src/components/NoteCard/`, `src/components/UserProfile/`, etc.
+- Each component folder should contain:
+  - The main component file (e.g., `NoteCard.jsx`)
+  - Component-specific styles (e.g., `NoteCard.css`)
+  - Component-specific tests (e.g., `NoteCard.test.jsx`)
+- This keeps related files together and maintains a clean, organized codebase structure
+
