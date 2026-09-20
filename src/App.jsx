@@ -35,6 +35,10 @@ function App() {
     setNoteId('')
   }
 
+  const handleListNotes = () => {
+    console.log('Listing notes')
+  }
+
   const getActionInstruction = (action) => {
     switch (action) {
       case 'Add a note':
@@ -123,6 +127,15 @@ function App() {
               </button>
               <button type="button" className="form-btn form-btn-clear" onClick={handleClearRetrieve}>
                 clear
+              </button>
+            </div>
+          </div>
+        )}
+        {selectedAction === 'List notes' && (
+          <div className="note-form">
+            <div className="form-actions">
+              <button type="button" className="form-btn form-btn-add" onClick={handleListNotes}>
+                retrieve
               </button>
             </div>
           </div>

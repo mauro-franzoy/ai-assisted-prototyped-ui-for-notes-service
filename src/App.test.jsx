@@ -85,6 +85,11 @@ describe('App Component Layout', () => {
     expect(screen.getByRole('heading', { level: 1, name: /list notes/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 2, name: /list notes/i })).toBeInTheDocument()
     expect(screen.getByText(/provide the filters if any and click retrieve/i)).toBeInTheDocument()
+    
+    // Check for retrieve button in the form
+    const mainArea = screen.getByRole('main')
+    const retrieveButton = within(mainArea).getByText(/^retrieve$/i)
+    expect(retrieveButton).toBeInTheDocument()
 
     // Click "Retrieve a note" button
     act(() => {
@@ -150,6 +155,24 @@ describe('App Component Layout', () => {
 
     expect(retrieveButton).toBeInTheDocument()
     expect(clearButton).toBeInTheDocument()
+  })
+
+  it('shows retrieve button when List notes button is clicked', () => {
+    render(<App />)
+
+    const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
+    const buttons = within(leftPanel).getAllByRole('button')
+
+    // Click "List notes" button
+    act(() => {
+      fireEvent.click(buttons[1])
+    })
+
+    // Check for retrieve button
+    const formButtons = screen.getAllByRole('button')
+    const retrieveButton = formButtons.find(btn => btn.textContent === 'retrieve')
+
+    expect(retrieveButton).toBeInTheDocument()
   })
 })
 
