@@ -59,7 +59,7 @@ function App() {
     setNoteText('')
   }
 
-  const handleRetrieveNote = async () => {
+  const handleRetrieveNote = async (keepNoteId = false) => {
     setLoading(true)
     setError(null)
     try {
@@ -80,7 +80,9 @@ function App() {
       }
       setRetrievedNote(noteData)
       setShowRetrievedNote(true)
-      setNoteId('')
+      if (!keepNoteId) {
+        setNoteId('')
+      }
     } catch (err) {
       setError(err.message)
       console.error('Error retrieving note:', err)
@@ -129,6 +131,17 @@ function App() {
 
   const handleClearListNotes = () => {
     setShowNotesList(false)
+  }
+
+  const handleNoteCardClick = async (note) => {
+    // Switch to Retrieve a note action
+    setSelectedAction('Retrieve a note')
+    setShowNotesList(false)
+    setShowRetrievedNote(false)
+    
+    // Set the note id and automatically retrieve it
+    setNoteId(note.id.toString())
+    await handleRetrieveNote(true)
   }
 
   const getActionInstruction = (action) => {
@@ -281,7 +294,7 @@ function App() {
             <div className="notes-list-container">
               <div className="notes-grid">
                 {notes.map((note) => (
-                  <NoteCard key={note.id} note={note} />
+                  <NoteCard key={note.id} note={note} onClick={handleNoteCardClick} />
                 ))}
               </div>
             </div>

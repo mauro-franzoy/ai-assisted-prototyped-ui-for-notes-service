@@ -274,6 +274,7 @@ describe('App Component Layout', () => {
     })
 
     // Check for sample note content (NoteCard component renders this)
+    expect(screen.getByText('1')).toBeInTheDocument()
     expect(screen.getByText('Meeting Notes')).toBeInTheDocument()
     expect(screen.getByText('Discuss project timeline and deliverables')).toBeInTheDocument()
   })
@@ -309,9 +310,10 @@ describe('App Component Layout', () => {
       await new Promise(resolve => setTimeout(resolve, 0))
     })
 
-    // Check for clear button
+    // Check for clear button and note id
     const clearButton = within(mainArea).getByText(/^clear$/i)
     expect(clearButton).toBeInTheDocument()
+    expect(screen.getByText('1')).toBeInTheDocument()
 
     // Click clear button
     act(() => {
@@ -319,6 +321,7 @@ describe('App Component Layout', () => {
     })
 
     // Check that notes list is hidden and retrieve button is shown again
+    expect(screen.queryByText('1')).not.toBeInTheDocument()
     expect(screen.queryByText('Meeting Notes')).not.toBeInTheDocument()
     expect(within(mainArea).getByText(/^retrieve$/i)).toBeInTheDocument()
   })
@@ -388,6 +391,64 @@ describe('App Component API Integration', () => {
         }),
       }
     )
+  })
+
+  it('loads note in retrieve view when note card is clicked', async () => {
+    // Mock successful API responses
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => [
+        { id: 1, name: 'Meeting Notes', noteText: 'Discuss project timeline and deliverables' },
+        { id: 2, name: 'Shopping List', noteText: 'Milk, eggs, bread, vegetables' },
+      ],
+    })
+
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        id: 1,
+        name: 'Meeting Notes',
+        noteText: 'Discuss project timeline and deliverables'
+      }),
+    })
+
+    render(<App />)
+
+    const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
+    const buttons = within(leftPanel).getAllByRole('button')
+
+    // Click "List notes" button
+    act(() => {
+      fireEvent.click(buttons[1])
+    })
+
+    // Click retrieve button to load notes
+    const mainArea = screen.getByRole('main')
+    const retrieveButton = within(mainArea).getByText(/^retrieve$/i)
+    act(() => {
+      fireEvent.click(retrieveButton)
+    })
+
+    // Wait for async operation
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 0))
+    })
+
+    // Click on a note card
+    const noteCard = screen.getByText('Meeting Notes').closest('.note-card')
+    act(() => {
+      fireEvent.click(noteCard)
+    })
+
+    // Wait for async operation
+    await act(async () => {
+      await new Promise(resolve => setTimeout(resolve, 0))
+    })
+
+    // Verify it switched to Retrieve a note view and shows the note
+    expect(screen.getByRole('heading', { level: 1, name: /retrieve a note/i })).toBeInTheDocument()
+    expect(screen.getByText('Meeting Notes')).toBeInTheDocument()
+    expect(screen.getByText('Discuss project timeline and deliverables')).toBeInTheDocument()
   })
 })
 
