@@ -173,10 +173,36 @@ describe('App Component Layout', () => {
     })
 
     // Check for retrieve button
-    const formButtons = screen.getAllByRole('button')
-    const retrieveButton = formButtons.find(btn => btn.textContent === 'retrieve')
-
+    const mainArea = screen.getByRole('main')
+    const retrieveButton = within(mainArea).getByText(/^retrieve$/i)
     expect(retrieveButton).toBeInTheDocument()
+  })
+
+  it('shows notes list when retrieve button is clicked in List notes', () => {
+    render(<App />)
+
+    const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
+    const buttons = within(leftPanel).getAllByRole('button')
+
+    // Click "List notes" button
+    act(() => {
+      fireEvent.click(buttons[1])
+    })
+
+    // Click retrieve button
+    const mainArea = screen.getByRole('main')
+    const retrieveButton = within(mainArea).getByText(/^retrieve$/i)
+    act(() => {
+      fireEvent.click(retrieveButton)
+    })
+
+    // Check for note cards with labels and content
+    expect(screen.getAllByText(/^name$/i).length).toBeGreaterThan(0)
+    expect(screen.getAllByText(/^text$/i).length).toBeGreaterThan(0)
+    
+    // Check for sample note content
+    expect(screen.getByText('Meeting Notes')).toBeInTheDocument()
+    expect(screen.getByText('Discuss project timeline and deliverables')).toBeInTheDocument()
   })
 })
 

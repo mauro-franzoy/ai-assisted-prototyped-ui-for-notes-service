@@ -1,11 +1,31 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 
+function NoteCard({ note }) {
+  return (
+    <div className="note-card">
+      <div className="note-card-label">name</div>
+      <div className="note-card-value">{note.name}</div>
+      <div className="note-card-label">text</div>
+      <div className="note-card-value">{note.text}</div>
+    </div>
+  )
+}
+
 function App() {
   const [selectedAction, setSelectedAction] = useState(null)
   const [noteName, setNoteName] = useState('')
   const [noteText, setNoteText] = useState('')
   const [noteId, setNoteId] = useState('')
+  const [showNotesList, setShowNotesList] = useState(false)
+  const [notes, setNotes] = useState([
+    { id: 1, name: 'Meeting Notes', text: 'Discuss project timeline and deliverables' },
+    { id: 2, name: 'Shopping List', text: 'Milk, eggs, bread, vegetables' },
+    { id: 3, name: 'Book Ideas', text: 'Read more about React and testing' },
+    { id: 4, name: 'Travel Plans', text: 'Flight to NYC on Friday, hotel booking needed' },
+    { id: 5, name: 'Work Tasks', text: 'Complete code review, update documentation' },
+    { id: 6, name: 'Personal Goals', text: 'Exercise 3 times a week, learn new skill' },
+  ])
 
   useEffect(() => {
     document.title = 'Notes Service'
@@ -36,7 +56,7 @@ function App() {
   }
 
   const handleListNotes = () => {
-    console.log('Listing notes')
+    setShowNotesList(true)
   }
 
   const getActionInstruction = (action) => {
@@ -131,12 +151,21 @@ function App() {
             </div>
           </div>
         )}
-        {selectedAction === 'List notes' && (
+        {selectedAction === 'List notes' && !showNotesList && (
           <div className="note-form">
             <div className="form-actions">
               <button type="button" className="form-btn form-btn-add" onClick={handleListNotes}>
                 retrieve
               </button>
+            </div>
+          </div>
+        )}
+        {selectedAction === 'List notes' && showNotesList && (
+          <div className="notes-list-container">
+            <div className="notes-grid">
+              {notes.map((note) => (
+                <NoteCard key={note.id} note={note} />
+              ))}
             </div>
           </div>
         )}
