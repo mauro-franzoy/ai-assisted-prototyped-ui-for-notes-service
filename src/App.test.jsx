@@ -605,6 +605,86 @@ describe('App Component API Integration', () => {
     expect(readBtn).toHaveClass('active')
     expect(retrieveBtn).not.toHaveClass('active')
   })
+
+  it('clears id field once retrieve button is clicked in retrieve a note', async () => {
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        id: 42,
+        name: 'Test',
+        noteText: 'Content'
+      }),
+    })
+
+    render(<App />)
+
+    const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
+    const retrieveBtn = within(leftPanel).getByRole('button', { name: /^retrieve a note$/i })
+
+    act(() => {
+      fireEvent.click(retrieveBtn)
+    })
+
+    const noteIdInput = screen.getByLabelText(/note id/i)
+    fireEvent.change(noteIdInput, { target: { value: '42' } })
+    expect(noteIdInput).toHaveValue('42')
+
+    const mainArea = screen.getByRole('main')
+    const retrieveSubmitBtn = within(mainArea).getByText(/^retrieve$/i)
+
+    await act(async () => {
+      fireEvent.click(retrieveSubmitBtn)
+    })
+
+    // Once clicked, id field was cleared and view navigated to Read a note
+    expect(screen.getByRole('heading', { level: 1, name: 'Read a note' })).toBeInTheDocument()
+
+    // Navigating back to Retrieve a note shows empty id field
+    act(() => {
+      fireEvent.click(retrieveBtn)
+    })
+    expect(screen.getByLabelText(/note id/i)).toHaveValue('')
+  })
+
+  it('clears all fields when navigating away from any page', () => {
+    render(<App />)
+
+    const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
+    const addBtn = within(leftPanel).getByRole('button', { name: /^add a note$/i })
+    const retrieveBtn = within(leftPanel).getByRole('button', { name: /^retrieve a note$/i })
+
+    // Navigate to Add a note and type values
+    act(() => {
+      fireEvent.click(addBtn)
+    })
+    const nameInput = screen.getByLabelText(/name/i)
+    const textInput = screen.getByLabelText(/text/i)
+    fireEvent.change(nameInput, { target: { value: 'Draft Title' } })
+    fireEvent.change(textInput, { target: { value: 'Draft Text' } })
+    expect(nameInput).toHaveValue('Draft Title')
+    expect(textInput).toHaveValue('Draft Text')
+
+    // Navigate away to Retrieve a note
+    act(() => {
+      fireEvent.click(retrieveBtn)
+    })
+    const noteIdInput = screen.getByLabelText(/note id/i)
+    fireEvent.change(noteIdInput, { target: { value: '99' } })
+    expect(noteIdInput).toHaveValue('99')
+
+    // Navigate back to Add a note and verify fields are cleared
+    act(() => {
+      fireEvent.click(addBtn)
+    })
+    expect(screen.getByLabelText(/name/i)).toHaveValue('')
+    expect(screen.getByLabelText(/text/i)).toHaveValue('')
+
+    // Navigate back to Retrieve a note and verify fields are cleared
+    act(() => {
+      fireEvent.click(retrieveBtn)
+    })
+    expect(screen.getByLabelText(/note id/i)).toHaveValue('')
+  })
 })
 
 

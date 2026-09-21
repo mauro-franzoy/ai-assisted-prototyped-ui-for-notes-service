@@ -19,16 +19,26 @@ function App() {
     document.title = 'Notes Service'
   }, [])
 
+  const clearAllFields = () => {
+    setNoteName('')
+    setNoteText('')
+    setNoteId('')
+    setError(null)
+  }
+
   const handleButtonClick = (action) => {
+    clearAllFields()
+    setShowNotesList(false)
+    setShowRetrievedNote(false)
     setSelectedAction(action)
   }
 
   const handleGoToWelcome = () => {
-    setSelectedAction(null)
+    clearAllFields()
     setShowNotesList(false)
     setShowRetrievedNote(false)
     setRetrievedNote(null)
-    setError(null)
+    setSelectedAction(null)
   }
 
   const handleAddNote = async () => {
@@ -76,10 +86,12 @@ function App() {
   }
 
   const handleRetrieveNote = async () => {
+    const currentNoteId = noteId
+    setNoteId('')
     setLoading(true)
     setError(null)
     try {
-      const response = await fetch(`http://localhost:8080/noteservice/notes/${noteId}`, {
+      const response = await fetch(`http://localhost:8080/noteservice/notes/${currentNoteId}`, {
         method: 'GET',
       })
 
@@ -94,7 +106,6 @@ function App() {
         text: data.noteText
       }
       setRetrievedNote(noteData)
-      setNoteId('')
       setShowRetrievedNote(false)
       setSelectedAction('Read a note')
     } catch (err) {
@@ -147,11 +158,13 @@ function App() {
   }
 
   const handleClearReadNote = () => {
+    clearAllFields()
     setRetrievedNote(null)
     setSelectedAction(null)
   }
 
   const handleNoteCardClick = (note) => {
+    clearAllFields()
     setRetrievedNote(note)
     setShowNotesList(false)
     setSelectedAction('Read a note')
