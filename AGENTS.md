@@ -1,14 +1,17 @@
 # Git Commit Guidelines
 
-Whenever you create a Git commit, always append a `Co-authored-by` trailer at the end of the commit message attributing the commit to your specific agent identity:
+Whenever you create a Git commit, always append a `Co-authored-by` trailer at the end of the commit message attributing the commit to your specific agent identity.
+
+Explicitly, no agent email or other identifier should be added to commit messages. Only the agent name (such as Antigravity, Cursor, or Devin) must be included.
 
 ```text
-Co-authored-by: <Agent Name> <<agent-identifier>>
+Co-authored-by: <Agent Name>
 ```
 
 ### Examples
-- When operating as Antigravity: `Co-authored-by: Antigravity <antigravity@google.com>`
-- When operating as another assistant/agent: use that respective agent's name and identifier.
+- When operating as Antigravity: `Co-authored-by: Antigravity`
+- When operating as Cursor: `Co-authored-by: Cursor`
+- When operating as Devin: `Co-authored-by: Devin`
 
 # Testing Guidelines
 
