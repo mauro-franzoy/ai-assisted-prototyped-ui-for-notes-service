@@ -22,6 +22,14 @@ function App() {
     setSelectedAction(action)
   }
 
+  const handleGoToWelcome = () => {
+    setSelectedAction(null)
+    setShowNotesList(false)
+    setShowRetrievedNote(false)
+    setRetrievedNote(null)
+    setError(null)
+  }
+
   const handleAddNote = async () => {
     setLoading(true)
     setError(null)
@@ -157,7 +165,7 @@ function App() {
 
   return (
     <div className="app">
-      <header className="app-header">
+      <header className="app-header" onClick={handleGoToWelcome}>
         <p className="app-brand">Notes Service</p>
       </header>
 
@@ -305,7 +313,7 @@ function App() {
         {selectedAction && <p>{getActionInstruction(selectedAction)}</p>}
       </aside>
 
-      <footer className="app-footer">
+      <footer className="app-footer" onClick={handleGoToWelcome}>
         <p>Notes Service</p>
       </footer>
     </div>

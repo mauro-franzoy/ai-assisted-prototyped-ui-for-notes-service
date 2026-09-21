@@ -450,5 +450,50 @@ describe('App Component API Integration', () => {
     expect(screen.getByText('Meeting Notes')).toBeInTheDocument()
     expect(screen.getByText('Discuss project timeline and deliverables')).toBeInTheDocument()
   })
+
+  it('navigates to welcome screen when clicking the header', () => {
+    render(<App />)
+
+    const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
+    const buttons = within(leftPanel).getAllByRole('button')
+
+    // Click "Add a note" button
+    act(() => {
+      fireEvent.click(buttons[0])
+    })
+    expect(screen.getByRole('heading', { level: 1, name: /add a note/i })).toBeInTheDocument()
+
+    // Click header
+    const header = screen.getByRole('banner')
+    act(() => {
+      fireEvent.click(header)
+    })
+
+    expect(screen.getByRole('heading', { level: 1, name: /welcome to notes service/i })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { level: 2, name: /add a note/i })).not.toBeInTheDocument()
+  })
+
+  it('navigates to welcome screen when clicking the footer', () => {
+    render(<App />)
+
+    const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
+    const buttons = within(leftPanel).getAllByRole('button')
+
+    // Click "List notes" button
+    act(() => {
+      fireEvent.click(buttons[1])
+    })
+    expect(screen.getByRole('heading', { level: 1, name: /list notes/i })).toBeInTheDocument()
+
+    // Click footer
+    const footer = screen.getByRole('contentinfo')
+    act(() => {
+      fireEvent.click(footer)
+    })
+
+    expect(screen.getByRole('heading', { level: 1, name: /welcome to notes service/i })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { level: 2, name: /list notes/i })).not.toBeInTheDocument()
+  })
 })
+
 
