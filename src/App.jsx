@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import NoteCard from './components/NoteCard/NoteCard'
+import ReadNote from './components/ReadNote/ReadNote'
 
 function App() {
   const [selectedAction, setSelectedAction] = useState(null)
@@ -67,7 +68,7 @@ function App() {
     setNoteText('')
   }
 
-  const handleRetrieveNote = async (keepNoteId = false) => {
+  const handleRetrieveNote = async () => {
     setLoading(true)
     setError(null)
     try {
@@ -86,10 +87,9 @@ function App() {
         text: data.noteText
       }
       setRetrievedNote(noteData)
-      setShowRetrievedNote(true)
-      if (!keepNoteId) {
-        setNoteId('')
-      }
+      setNoteId('')
+      setShowRetrievedNote(false)
+      setSelectedAction('Read a note')
     } catch (err) {
       setError(err.message)
       console.error('Error retrieving note:', err)
@@ -139,15 +139,15 @@ function App() {
     setShowNotesList(false)
   }
 
-  const handleNoteCardClick = async (note) => {
-    // Switch to Retrieve a note action
-    setSelectedAction('Retrieve a note')
+  const handleClearReadNote = () => {
+    setRetrievedNote(null)
+    setSelectedAction(null)
+  }
+
+  const handleNoteCardClick = (note) => {
+    setRetrievedNote(note)
     setShowNotesList(false)
-    setShowRetrievedNote(false)
-    
-    // Set the note id and automatically retrieve it
-    setNoteId(note.id.toString())
-    await handleRetrieveNote(true)
+    setSelectedAction('Read a note')
   }
 
   const getActionInstruction = (action) => {
@@ -158,6 +158,8 @@ function App() {
         return 'Provide the filters if any and click retrieve.'
       case 'Retrieve a note':
         return 'Provide note id and click retrieve.'
+      case 'Read a note':
+        return 'View non-editable note details.'
       default:
         return ''
     }
@@ -172,16 +174,39 @@ function App() {
       <aside className="app-panel app-panel-left" aria-label="Left panel">
         <h2>Menu</h2>
         <div className="panel-actions">
-          <button type="button" className="panel-btn" onClick={() => handleButtonClick('Add a note')}>
+          <button
+            type="button"
+            className={`panel-btn ${selectedAction === 'Add a note' ? 'active' : ''}`}
+            onClick={() => handleButtonClick('Add a note')}
+          >
             Add a note
           </button>
-          <button type="button" className="panel-btn" onClick={() => handleButtonClick('List notes')}>
+          <button
+            type="button"
+            className={`panel-btn ${selectedAction === 'List notes' ? 'active' : ''}`}
+            onClick={() => handleButtonClick('List notes')}
+          >
             List notes
           </button>
-          <button type="button" className="panel-btn" onClick={() => handleButtonClick('Retrieve a note')}>
+          <button
+            type="button"
+            className={`panel-btn ${selectedAction === 'Retrieve a note' ? 'active' : ''}`}
+            onClick={() => handleButtonClick('Retrieve a note')}
+          >
             Retrieve a note
           </button>
-          <button type="button" className="panel-btn" onClick={handleGoToWelcome}>
+          <button
+            type="button"
+            className={`panel-btn ${selectedAction === 'Read a note' ? 'active' : ''}`}
+            onClick={() => {}}
+          >
+            Read a note
+          </button>
+          <button
+            type="button"
+            className={`panel-btn ${!selectedAction ? 'active' : ''}`}
+            onClick={handleGoToWelcome}
+          >
             Welcome page
           </button>
         </div>
@@ -308,6 +333,12 @@ function App() {
               </div>
             </div>
           </>
+        )}
+        {selectedAction === 'Read a note' && (
+          <ReadNote
+            note={retrievedNote || { id: '', name: '', text: '' }}
+            onClear={handleClearReadNote}
+          />
         )}
       </main>
 

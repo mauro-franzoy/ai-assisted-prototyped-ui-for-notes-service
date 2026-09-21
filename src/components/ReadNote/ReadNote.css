@@ -1,0 +1,16 @@
+.read-note-container {
+  margin-top: 24px;
+  padding: 20px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  max-width: 440px;
+  box-sizing: border-box;
+}
+
+.read-note-input:read-only {
+  cursor: default;
+  background: var(--code-bg);
+  color: var(--text);
+  border-color: var(--border);
+}

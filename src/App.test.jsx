@@ -59,17 +59,18 @@ describe('App Component Layout', () => {
     expect(within(footer).getByText('Notes Service')).toBeInTheDocument()
   })
 
-  it('renders four action buttons with idle behavior in the left panel', () => {
+  it('renders five action buttons with idle behavior in the left panel', () => {
     render(<App />)
 
     const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
     const buttons = within(leftPanel).getAllByRole('button')
 
-    expect(buttons).toHaveLength(4)
+    expect(buttons).toHaveLength(5)
     expect(buttons.map((btn) => btn.textContent.trim())).toEqual([
       'Add a note',
       'List notes',
       'Retrieve a note',
+      'Read a note',
       'Welcome page',
     ])
 
@@ -174,7 +175,7 @@ describe('App Component Layout', () => {
     expect(clearButton).toBeInTheDocument()
   })
 
-  it('shows retrieved note card when retrieve button is clicked and clear button returns to form', async () => {
+  it('navigates to Read a note view and clears retrieve fields when retrieve button is clicked, and clear button takes to welcome page', async () => {
     // Mock successful API response
     global.fetch.mockResolvedValueOnce({
       ok: true,
@@ -207,12 +208,20 @@ describe('App Component Layout', () => {
       await new Promise(resolve => setTimeout(resolve, 0))
     })
 
-    // Check for note card content (NoteCard component renders this)
-    expect(screen.getByText('Sample Note')).toBeInTheDocument()
-    expect(screen.getByText('This is a sample retrieved note content')).toBeInTheDocument()
+    // Verify it navigated to "Read a note" page
+    expect(screen.getByRole('heading', { level: 1, name: 'Read a note' })).toBeInTheDocument()
 
-    // Check for clear button above note card
-    const clearButton = within(mainArea).getByText(/^clear$/i)
+    // Check that note fields in Read a note display the retrieved note
+    const idInput = screen.getByLabelText(/^id$/i)
+    const nameInput = screen.getByLabelText(/^note name$/i)
+    const textInput = screen.getByLabelText(/^note text$/i)
+
+    expect(idInput).toHaveValue('1')
+    expect(nameInput).toHaveValue('Sample Note')
+    expect(textInput).toHaveValue('This is a sample retrieved note content')
+
+    // Check clear button inside Read a note
+    const clearButton = within(mainArea).getByRole('button', { name: /^clear$/i })
     expect(clearButton).toBeInTheDocument()
 
     // Click clear button
@@ -220,9 +229,8 @@ describe('App Component Layout', () => {
       fireEvent.click(clearButton)
     })
 
-    // Check that note card is hidden and form is shown again
-    expect(screen.queryByText('Sample Note')).not.toBeInTheDocument()
-    expect(screen.getByLabelText(/note id/i)).toBeInTheDocument()
+    // Verify it takes you to welcome page
+    expect(screen.getByRole('heading', { level: 1, name: /welcome to notes service/i })).toBeInTheDocument()
   })
 
   it('shows retrieve button when List notes button is clicked', () => {
@@ -446,10 +454,10 @@ describe('App Component API Integration', () => {
       await new Promise(resolve => setTimeout(resolve, 0))
     })
 
-    // Verify it switched to Retrieve a note view and shows the note
-    expect(screen.getByRole('heading', { level: 1, name: /retrieve a note/i })).toBeInTheDocument()
-    expect(screen.getByText('Meeting Notes')).toBeInTheDocument()
-    expect(screen.getByText('Discuss project timeline and deliverables')).toBeInTheDocument()
+    // Verify it switched to Read a note view and shows the note
+    expect(screen.getByRole('heading', { level: 1, name: 'Read a note' })).toBeInTheDocument()
+    expect(screen.getByLabelText(/^note name$/i)).toHaveValue('Meeting Notes')
+    expect(screen.getByLabelText(/^note text$/i)).toHaveValue('Discuss project timeline and deliverables')
   })
 
   it('navigates to welcome screen when clicking the header', () => {
@@ -509,12 +517,87 @@ describe('App Component API Integration', () => {
     expect(screen.getByRole('heading', { level: 1, name: /add a note/i })).toBeInTheDocument()
 
     // Click "Welcome page" button
+    const welcomeButton = within(leftPanel).getByRole('button', { name: /welcome page/i })
     act(() => {
-      fireEvent.click(buttons[3])
+      fireEvent.click(welcomeButton)
     })
 
     expect(screen.getByRole('heading', { level: 1, name: /welcome to notes service/i })).toBeInTheDocument()
     expect(screen.queryByRole('heading', { level: 2, name: /add a note/i })).not.toBeInTheDocument()
+  })
+
+  it('does not do anything when clicking the Read a note left menu button', () => {
+    render(<App />)
+
+    const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
+    const readNoteButton = within(leftPanel).getByRole('button', { name: /^read a note$/i })
+
+    // On initial render, welcome screen is shown
+    expect(screen.getByRole('heading', { level: 1, name: /welcome to notes service/i })).toBeInTheDocument()
+
+    act(() => {
+      fireEvent.click(readNoteButton)
+    })
+
+    // View should remain on welcome screen
+    expect(screen.getByRole('heading', { level: 1, name: /welcome to notes service/i })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { level: 1, name: 'Read a note' })).not.toBeInTheDocument()
+  })
+
+  it('paints the corresponding left menu button in blue when page is open in main area', async () => {
+    render(<App />)
+
+    const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
+
+    const addBtn = within(leftPanel).getByRole('button', { name: /^add a note$/i })
+    const listBtn = within(leftPanel).getByRole('button', { name: /^list notes$/i })
+    const retrieveBtn = within(leftPanel).getByRole('button', { name: /^retrieve a note$/i })
+    const readBtn = within(leftPanel).getByRole('button', { name: /^read a note$/i })
+    const welcomeBtn = within(leftPanel).getByRole('button', { name: /^welcome page$/i })
+
+    // Initial state: welcome page
+    expect(welcomeBtn).toHaveClass('active')
+    expect(addBtn).not.toHaveClass('active')
+
+    // Navigate to Add a note
+    act(() => {
+      fireEvent.click(addBtn)
+    })
+    expect(addBtn).toHaveClass('active')
+    expect(welcomeBtn).not.toHaveClass('active')
+
+    // Navigate to List notes
+    act(() => {
+      fireEvent.click(listBtn)
+    })
+    expect(listBtn).toHaveClass('active')
+    expect(addBtn).not.toHaveClass('active')
+
+    // Navigate to Retrieve a note
+    act(() => {
+      fireEvent.click(retrieveBtn)
+    })
+    expect(retrieveBtn).toHaveClass('active')
+    expect(listBtn).not.toHaveClass('active')
+
+    // Retrieve a note to open Read a note view
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({
+        id: 1,
+        name: 'Sample Note',
+        noteText: 'Sample content'
+      }),
+    })
+
+    const mainArea = screen.getByRole('main')
+    const retrieveSubmitBtn = within(mainArea).getByText(/^retrieve$/i)
+    await act(async () => {
+      fireEvent.click(retrieveSubmitBtn)
+    })
+
+    expect(readBtn).toHaveClass('active')
+    expect(retrieveBtn).not.toHaveClass('active')
   })
 })
 
