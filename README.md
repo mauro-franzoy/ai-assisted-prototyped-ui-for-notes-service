@@ -7,5 +7,5 @@ This is an AI-assisted prototype of a React App that will use the Notes Service.
 
 Please check AGENTS.md and git commit history to check the taken workflow.
 
-
+![illustrative image](images/ai-assisted-prototyped-ui-for-notes-service-image.png)
 
