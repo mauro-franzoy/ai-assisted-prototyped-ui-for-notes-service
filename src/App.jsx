@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import NoteCard from './components/NoteCard/NoteCard'
 import ReadNote from './components/ReadNote/ReadNote'
+import AddNote from './components/AddNote/AddNote'
+import RetrieveNote from './components/RetrieveNote/RetrieveNote'
 
 function App() {
   const [selectedAction, setSelectedAction] = useState(null)
@@ -236,83 +238,24 @@ function App() {
         <h1>{selectedAction || 'Welcome to Notes Service'}</h1>
         {error && <div className="error-message">{error}</div>}
         {selectedAction === 'Add a note' && (
-          <div className="note-form">
-            <div className="form-field">
-              <label htmlFor="note-name">Name</label>
-              <input
-                id="note-name"
-                type="text"
-                value={noteName}
-                onChange={(e) => setNoteName(e.target.value)}
-                maxLength={50}
-                className="form-input"
-                disabled={loading}
-              />
-            </div>
-            <div className="form-field">
-              <label htmlFor="note-text">text</label>
-              <input
-                id="note-text"
-                type="text"
-                value={noteText}
-                onChange={(e) => setNoteText(e.target.value)}
-                maxLength={50}
-                className="form-input"
-                disabled={loading}
-              />
-            </div>
-            <div className="form-actions">
-              <button 
-                type="button" 
-                className="form-btn form-btn-add" 
-                onClick={handleAddNote}
-                disabled={loading}
-              >
-                {loading ? 'Adding...' : 'add'}
-              </button>
-              <button 
-                type="button" 
-                className="form-btn form-btn-clear" 
-                onClick={handleClearNote}
-                disabled={loading}
-              >
-                clear
-              </button>
-            </div>
-          </div>
+          <AddNote
+            noteName={noteName}
+            onNoteNameChange={(e) => setNoteName(e.target.value)}
+            noteText={noteText}
+            onNoteTextChange={(e) => setNoteText(e.target.value)}
+            onAddNote={handleAddNote}
+            onClearNote={handleClearNote}
+            loading={loading}
+          />
         )}
         {selectedAction === 'Retrieve a note' && !showRetrievedNote && (
-          <div className="note-form">
-            <div className="form-field">
-              <label htmlFor="note-id">Note id</label>
-              <input
-                id="note-id"
-                type="text"
-                value={noteId}
-                onChange={(e) => setNoteId(e.target.value)}
-                className="form-input"
-                disabled={loading}
-              />
-            </div>
-            <div className="form-actions">
-              <button 
-                type="button" 
-                className="form-btn form-btn-add" 
-                onClick={handleRetrieveNote}
-                disabled={loading}
-              >
-                {loading ? 'Retrieving...' : 'retrieve'}
-              </button>
-              <button 
-                type="button" 
-                className="form-btn form-btn-clear" 
-                onClick={handleClearRetrieve}
-                disabled={loading}
-              >
-                clear
-              </button>
-            </div>
-          </div>
+          <RetrieveNote
+            noteId={noteId}
+            onNoteIdChange={(e) => setNoteId(e.target.value)}
+            onRetrieveNote={handleRetrieveNote}
+            onClearRetrieve={handleClearRetrieve}
+            loading={loading}
+          />
         )}
         {selectedAction === 'Retrieve a note' && showRetrievedNote && (
           <>
