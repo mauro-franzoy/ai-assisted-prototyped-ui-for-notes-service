@@ -400,6 +400,12 @@ describe('App Component API Integration', () => {
         }),
       }
     )
+
+    // Verify it navigated to Read a note page and displays the added note
+    expect(screen.getByRole('heading', { level: 1, name: 'Read a note' })).toBeInTheDocument()
+    expect(screen.getByLabelText(/^id$/i)).toHaveValue('1')
+    expect(screen.getByLabelText(/^note name$/i)).toHaveValue('Test Note')
+    expect(screen.getByLabelText(/^note text$/i)).toHaveValue('Test content')
   })
 
   it('loads note in retrieve view when note card is clicked', async () => {

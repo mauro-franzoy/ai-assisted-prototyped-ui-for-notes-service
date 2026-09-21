@@ -53,8 +53,15 @@ function App() {
 
       const data = await response.json()
       console.log('Note added successfully:', data)
+      const noteData = {
+        id: data.id,
+        name: data.name,
+        text: data.noteText
+      }
+      setRetrievedNote(noteData)
       setNoteName('')
       setNoteText('')
+      setSelectedAction('Read a note')
     } catch (err) {
       setError(err.message)
       console.error('Error adding note:', err)
