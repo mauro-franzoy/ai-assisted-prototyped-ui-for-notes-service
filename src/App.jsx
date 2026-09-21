@@ -181,6 +181,9 @@ function App() {
           <button type="button" className="panel-btn" onClick={() => handleButtonClick('Retrieve a note')}>
             Retrieve a note
           </button>
+          <button type="button" className="panel-btn" onClick={handleGoToWelcome}>
+            Welcome page
+          </button>
         </div>
       </aside>
 

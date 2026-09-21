@@ -59,17 +59,18 @@ describe('App Component Layout', () => {
     expect(within(footer).getByText('Notes Service')).toBeInTheDocument()
   })
 
-  it('renders three action buttons with idle behavior in the left panel', () => {
+  it('renders four action buttons with idle behavior in the left panel', () => {
     render(<App />)
 
     const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
     const buttons = within(leftPanel).getAllByRole('button')
 
-    expect(buttons).toHaveLength(3)
+    expect(buttons).toHaveLength(4)
     expect(buttons.map((btn) => btn.textContent.trim())).toEqual([
       'Add a note',
       'List notes',
       'Retrieve a note',
+      'Welcome page',
     ])
 
     buttons.forEach((button) => {
@@ -493,6 +494,27 @@ describe('App Component API Integration', () => {
 
     expect(screen.getByRole('heading', { level: 1, name: /welcome to notes service/i })).toBeInTheDocument()
     expect(screen.queryByRole('heading', { level: 2, name: /list notes/i })).not.toBeInTheDocument()
+  })
+
+  it('navigates to welcome screen when clicking the Welcome page button', () => {
+    render(<App />)
+
+    const leftPanel = screen.getByRole('complementary', { name: /left panel/i })
+    const buttons = within(leftPanel).getAllByRole('button')
+
+    // Click "Add a note" button first
+    act(() => {
+      fireEvent.click(buttons[0])
+    })
+    expect(screen.getByRole('heading', { level: 1, name: /add a note/i })).toBeInTheDocument()
+
+    // Click "Welcome page" button
+    act(() => {
+      fireEvent.click(buttons[3])
+    })
+
+    expect(screen.getByRole('heading', { level: 1, name: /welcome to notes service/i })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { level: 2, name: /add a note/i })).not.toBeInTheDocument()
   })
 })
 
